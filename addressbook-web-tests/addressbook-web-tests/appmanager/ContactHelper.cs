@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
+using System.Dynamic;
 
 namespace WebAddressbookTests
 {
@@ -14,6 +15,16 @@ namespace WebAddressbookTests
         public ContactHelper(ApplicationManager manager) : base(manager)
         {
         }
+        public ContactHelper Creation(ContactData contact)
+        {
+            manager.Navigator.OpenHomePage();
+            InitContactCreation();
+            FillContactForm(contact);
+            NewContactAdd();
+            ReturnToHomepage();
+            return this;
+        }
+
         public ContactHelper InitContactCreation()
         {
             driver.FindElement(By.LinkText("add new")).Click();
@@ -40,20 +51,28 @@ namespace WebAddressbookTests
             return this;
         }
 
-        public ContactHelper FillContactForm(ContactData group)
+        public ContactHelper FillContactForm(ContactData contact)
         {
-            driver.FindElement(By.Name("firstname")).Click();
-            driver.FindElement(By.Name("firstname")).Clear();
-            driver.FindElement(By.Name("firstname")).SendKeys(group.Firstname);
-            driver.FindElement(By.Name("lastname")).Click();
-            driver.FindElement(By.Name("lastname")).Clear();
-            driver.FindElement(By.Name("lastname")).SendKeys(group.Lastname);
+            Type(By.Name("firstname"), contact.Firstname);
+            Type(By.Name("lastname"), contact.Lastname);
             return this;
         }
 
         public ContactHelper NewContactAdd()
         {
             driver.FindElement(By.XPath("//div[@id='content']/form/input[20]")).Click();
+            return this;
+        }
+
+        public ContactHelper IsContactPresent()
+        {
+            manager.Navigator.OpenHomePage();
+            if (!IsElementPresent(By.Name("selected[]")))
+            {
+                ContactData ContactPresent = new ContactData("missing");
+                Creation(ContactPresent);
+                driver.FindElement(By.Name("selected[]")).Click();
+            }
             return this;
         }
 

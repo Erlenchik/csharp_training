@@ -21,7 +21,7 @@ namespace WebAddressbookTests
             InitGroupCreation();
             FillGroupForm(group);
             SubmitGroupCreation();
-            ReturnToGroupsPage();
+            manager.Navigator.ReturnToGroupsPage();
             return this;
         }
 
@@ -36,7 +36,7 @@ namespace WebAddressbookTests
             manager.Navigator.GoToGroupsPage();
             SelectGroup(v);
             RemoveGroup();
-            ReturnToGroupsPage();
+            manager.Navigator.ReturnToGroupsPage();
             return this;
         }
 
@@ -47,24 +47,17 @@ namespace WebAddressbookTests
             InitGroupModification();
             FillGroupForm(newData);
             SubmitGroupModification();
-            ReturnToGroupsPage();
+            manager.Navigator.ReturnToGroupsPage();
             return this;
         }
                
         public GroupHelper FillGroupForm(GroupData group)
-        {
-            driver.FindElement(By.Name("group_name")).Click();
-            driver.FindElement(By.Name("group_name")).Clear();
-            driver.FindElement(By.Name("group_name")).SendKeys(group.Name);
-            driver.FindElement(By.Name("group_header")).Click();
-            driver.FindElement(By.Name("group_header")).Clear();
-            driver.FindElement(By.Name("group_header")).SendKeys(group.Header);
-            driver.FindElement(By.Name("group_footer")).Click();
-            driver.FindElement(By.Name("group_footer")).Clear();
-            driver.FindElement(By.Name("group_footer")).SendKeys(group.Footer);
+        {            
+            Type(By.Name("group_name"), group.Name);
+            Type(By.Name("group_header"), group.Header);
+            Type(By.Name("group_footer"), group.Footer);            
             return this;
         }
-
 
         public GroupHelper InitGroupCreation()
         {
@@ -72,15 +65,21 @@ namespace WebAddressbookTests
             return this;
         }
 
-        public GroupHelper SelectGroup(int index)
+        public GroupHelper IsGroupPresent()
         {
-            driver.FindElement(By.XPath("//div[@id='content']/form/span[" + index + "]/input")).Click();
+            manager.Navigator.GoToGroupsPage();
+            if (!IsElementPresent(By.Name("selected[]")))
+            {
+                GroupData GroupPresent = new GroupData("new test group");
+                Create(GroupPresent);
+                driver.FindElement(By.XPath("(//input[@name= 'selected[]'])")).Click();
+            }
             return this;
         }
 
-        public GroupHelper ReturnToGroupsPage()
+        public GroupHelper SelectGroup(int index)
         {
-            driver.FindElement(By.LinkText("group page")).Click();
+            driver.FindElement(By.XPath("//div[@id='content']/form/span[" + index + "]/input")).Click();
             return this;
         }
 

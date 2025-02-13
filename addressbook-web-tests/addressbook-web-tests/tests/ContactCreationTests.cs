@@ -3,22 +3,23 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using NUnit.Framework;
+using WebAddressbookTests;
 
 namespace WebAddressbookTests
 {
     [TestFixture]
-    public class ContactCreationTests : TestBase
+    public class ContactCreationTests : AuthTestBase
     {
         [Test]
         public void ContactCreationTest()
         {
-            ContactData group = new ContactData("Irina");
-            group.Lastname = "Zaichikova";
+            ContactData contact = new ContactData("Irina");
+            contact.Lastname = "Zaichikova";
             app.Contacts
                 .InitContactCreation()
+                .FillContactForm(contact)
                 .NewContactAdd();
             app.Navigator.ReturnToHomepage();
-            app.Auth.Logout();
         }      
     }
 }

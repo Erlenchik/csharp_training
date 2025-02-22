@@ -7,6 +7,7 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using System.Dynamic;
+using WebAddressbookTests;
 
 namespace WebAddressbookTests
 {
@@ -69,7 +70,7 @@ namespace WebAddressbookTests
             manager.Navigator.OpenHomePage();
             if (!IsElementPresent(By.Name("selected[]")))
             {
-                ContactData ContactPresent = new ContactData("missing");
+                ContactData ContactPresent = new ContactData("missing", "missing");
                 Creation(ContactPresent);
                 driver.FindElement(By.Name("selected[]")).Click();
             }
@@ -103,6 +104,21 @@ namespace WebAddressbookTests
         {
             driver.FindElement(By.LinkText("home page")).Click();
             return this;
-        }       
+        }
+
+        public List<ContactData> GetContactList()
+        {
+            manager.Navigator.OpenHomePage();
+            List<ContactData> contacts = new List<ContactData>();
+            ICollection<IWebElement> elements = driver.FindElements(By.XPath("//*[@id=\"maintable\"]/tbody/tr[@name=\"entry\"]"));
+            foreach (IWebElement element in elements)
+            {
+                String contactFirstname = element.FindElement(By.XPath("td[3]")).Text;
+                String contactLastname = element.FindElement(By.XPath("td[2]")).Text;
+
+                contacts.Add(new ContactData(contactFirstname, contactLastname));
+            }
+            return contacts;
+        }
     }
 }

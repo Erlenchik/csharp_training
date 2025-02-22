@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using WebAddressbookTests;
 
 namespace WebAddressbookTests
 {
@@ -13,9 +14,15 @@ namespace WebAddressbookTests
         [Test]
         public void ContactRemovalTest()
         {
-            app.Contacts.IsContactPresent(); 
+            app.Contacts.IsContactPresent();
 
-            app.Contacts.Remove(1);
+            List<ContactData> oldContacts = app.Contacts.GetContactList();
+
+            app.Contacts.Remove(0);
+
+            List<ContactData> newContacs = app.Contacts.GetContactList();
+            oldContacts.RemoveAt(0);
+            Assert.AreEqual(oldContacts, newContacs);
         }
     }
 }

@@ -4,6 +4,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Collections.Generic;
 using NUnit.Framework;
+using System.Security.Cryptography;
+using WebAddressbookTests;
 
 namespace WebAddressbookTests
 

@@ -86,8 +86,6 @@ namespace WebAddressbookTests
             driver.FindElements(By.Name("entry"))[index]
                 .FindElements(By.TagName("td"))[7]
                 .FindElement(By.TagName("a")).Click();
-            //driver.FindElement(By.XPath("//table[@id='maintable']/tbody/tr[2]/td[8]/a/img")).Click();
-            //return this;
         }
 
         public ContactHelper SubmitContactModification()

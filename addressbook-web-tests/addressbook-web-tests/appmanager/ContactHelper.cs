@@ -104,7 +104,7 @@ namespace WebAddressbookTests
 
         public ContactHelper ReturnToHomepage()
         {
-            driver.FindElement(By.LinkText("home page")).Click();
+            driver.FindElement(By.LinkText("home")).Click();
             return this;
         }
 

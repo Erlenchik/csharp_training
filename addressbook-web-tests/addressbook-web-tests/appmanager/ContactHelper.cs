@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
+using System.Text.RegularExpressions;
+using System.Reflection;
+using System.Net;
+using WebAddressbookTests;
 
 namespace WebAddressbookTests
 {
@@ -156,8 +160,8 @@ namespace WebAddressbookTests
         public ContactData GetContactInformationFromEditForm(int index)
         {
             manager.Navigator.OpenHomePage();
-
             InitContactModification(0);
+
             string firstName = driver.FindElement(By.Name("firstname")).GetAttribute("value");
             string lastName = driver.FindElement(By.Name("lastname")).GetAttribute("value");
             string address = driver.FindElement(By.Name("address")).GetAttribute("value");
@@ -180,5 +184,49 @@ namespace WebAddressbookTests
                 Email3 = email3
             };
         }
+
+        public int GetNumberOfSearchResults()
+        {
+            manager.Navigator.OpenHomePage();
+            string text = driver.FindElement(By.TagName("label")).Text;
+            Match m = new Regex(@"\d+").Match(text);
+            return Int32.Parse(m.Value);
+        }
+        public void InitContactDetails(int index)
+        {
+            driver.FindElements(By.Name("entry"))[index]
+                .FindElements(By.TagName("td"))[6]
+                .FindElement(By.TagName("a")).Click();
+
+        }
+
+        public string ContactFromTableToDetail(int index)
+        {
+            string firstName = GetContactInformationFromTable(index).Firstname;
+            string lastName = GetContactInformationFromTable(index).Lastname;
+            string address = GetContactInformationFromTable(index).Address;
+            string allPhones = GetContactInformationFromTable(index).AllPhones;
+            string allEmails = GetContactInformationFromTable(index).AllEmails;
+            
+            string contactFromTableToDetail = firstName + " " + lastName + "\r\n" +  address + "\r\n" + "\r\n" + allPhones + "\r\n" + "\r\n" + allEmails;
+
+            return contactFromTableToDetail.Trim();
+        }
+
+        public ContactData GetContactInformationFromDetails(int index)
+        {
+            manager.Navigator.OpenHomePage();
+            InitContactDetails(0);
+
+            string details = driver.FindElement(By.CssSelector("div#content")).Text;
+            if (details == null || details == "")
+            {
+                return "";
+            }
+            else 
+            {
+                return details.Replace("H: ", "").Replace("M: ", "").Replace("W: ", "");               
+            }
+        } 
     }
 }

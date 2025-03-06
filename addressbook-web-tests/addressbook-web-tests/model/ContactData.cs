@@ -10,6 +10,7 @@ namespace WebAddressbookTests
 {
     public class ContactData : IEquatable<ContactData>, IComparable<ContactData>
     {
+        private const string Pattern = "[ ()-]";
         private string allPhones;
         private string allEmails;
         private string allDetails;
@@ -93,7 +94,7 @@ namespace WebAddressbookTests
             {
                 return "";
             }
-            return Regex.Replace(phone, "[ -()]", ""); //аналогично phone.Replace(" ", "").Replace("-", "").Replace("(", "").Replace(")", "") + "\r\n";
+            return Regex.Replace(phone, Pattern, "") + "\r\n"; //аналогично phone.Replace(" ", "").Replace("-", "").Replace("(", "").Replace(")", "") + "\r\n"; 
         }
 
         public string AllEmails

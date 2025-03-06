@@ -185,6 +185,27 @@ namespace WebAddressbookTests
             };
         }
 
+        public string GetContactInfoFromEditFormToString(int index)
+        {
+            manager.Navigator.OpenHomePage();
+            InitContactModification(0);
+
+            string firstName = driver.FindElement(By.Name("firstname")).GetAttribute("value");
+            string lastName = driver.FindElement(By.Name("lastname")).GetAttribute("value");
+            string address = driver.FindElement(By.Name("address")).GetAttribute("value");
+
+            string homePhone = driver.FindElement(By.Name("home")).GetAttribute("value");
+            string mobilePhone = driver.FindElement(By.Name("mobile")).GetAttribute("value");
+            string workPhone = driver.FindElement(By.Name("work")).GetAttribute("value");
+            string email = driver.FindElement(By.Name("email")).GetAttribute("value");
+            string email2 = driver.FindElement(By.Name("email2")).GetAttribute("value");
+            string email3 = driver.FindElement(By.Name("email3")).GetAttribute("value");
+
+            string contactFromEditFormToDetail = firstName + " " + lastName + "\r\n" + address + "\r\n" + "\r\n" + homePhone + "\r\n" + mobilePhone + "\r\n" + workPhone + "\r\n" + "\r\n" + email + "\r\n" + email2 + "\r\n" + email3;
+
+            return contactFromEditFormToDetail.Trim();
+        }
+
         public int GetNumberOfSearchResults()
         {
             manager.Navigator.OpenHomePage();
@@ -213,7 +234,7 @@ namespace WebAddressbookTests
             return contactFromTableToDetail.Trim();
         }
 
-        public ContactData GetContactInformationFromDetails(int index)
+        public string GetContactInformationFromDetails(int index)
         {
             manager.Navigator.OpenHomePage();
             InitContactDetails(0);

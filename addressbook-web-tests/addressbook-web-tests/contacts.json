@@ -1,0 +1,30 @@
+[
+  {
+    "Firstname": "",
+    "Lastname": "'",
+    "Address": null,
+    "HomePhone": null,
+    "MobilePhone": null,
+    "WorkPhone": null,
+    "Email": null,
+    "Email2": null,
+    "Email3": null,
+    "AllPhones": "",
+    "AllEmails": "",
+    "AllDetails": ""
+  },
+  {
+    "Firstname": "EV:G",
+    "Lastname": "*FJ'",
+    "Address": null,
+    "HomePhone": null,
+    "MobilePhone": null,
+    "WorkPhone": null,
+    "Email": null,
+    "Email2": null,
+    "Email3": null,
+    "AllPhones": "",
+    "AllEmails": "",
+    "AllDetails": ""
+  }
+]

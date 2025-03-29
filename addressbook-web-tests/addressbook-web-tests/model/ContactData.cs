@@ -5,15 +5,21 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using OpenQA.Selenium;
+using LinqToDB.Mapping;
+using WebAddressbookTests;
+using Microsoft.Office.Interop.Excel;
 
 namespace WebAddressbookTests
 {
+    [Table(Name = "addressbook")]
+
     public class ContactData : IEquatable<ContactData>, IComparable<ContactData>
     {
         private const string Pattern = "[ ()-]";
         private string allPhones;
         private string allEmails;
         private string allDetails;
+        private string name;
 
         public ContactData()
         {
@@ -62,34 +68,54 @@ namespace WebAddressbookTests
             return result;
         }
 
+        [Column(Name = "firstname")]
         public string Firstname { get; set; }
+
+        [Column(Name = "lastname")]
         public string Lastname { get; set; }
+
+        [Column(Name = "address")]
         public string Address { get; set; }
+
+        [Column(Name = "home")]
         public string HomePhone { get; set; }
+
+        [Column(Name = "mobile")]
         public string MobilePhone { get; set; }
+
+        [Column(Name = "work")]
         public string WorkPhone { get; set; }
+
+        [Column(Name = "email")]
         public string Email { get; set; }
+
+        [Column(Name = "email2")]
         public string Email2 { get; set; }
+
+        [Column(Name = "email3")]
         public string Email3 { get; set; }
 
-        public string AllPhones 
-        { 
-            get 
+        [Column(Name = "id"), PrimaryKey, Identity]
+        public string Id { get; set; }
+
+        public string AllPhones
+        {
+            get
             {
                 if (allPhones != null)
                 {
                     return allPhones;
                 }
                 else
-                { 
+                {
                     return (CleanUp(HomePhone) + CleanUp(MobilePhone) + CleanUp(WorkPhone)).Trim();
                 }
             }
 
-          set 
-            { 
+            set
+            {
                 allPhones = value;
-            } 
+            }
         }
 
         private string CleanUp(string phone)
@@ -119,8 +145,8 @@ namespace WebAddressbookTests
             {
                 allEmails = value;
             }
-        } 
-        
+        }
+
         public string AllDetails
         {
             get
@@ -135,8 +161,32 @@ namespace WebAddressbookTests
                 }
             }
             set
-            { 
+            {
                 allDetails = value;
+            }
+        }
+
+        public string Name
+        {
+            get
+            {
+                if (name != null)
+                {
+                    return name;
+                }
+                return (CleanUp(Firstname) + " " + CleanUp(Lastname)).Trim();
+            }
+            set
+            {
+                name = value;
+            }
+        }
+
+        public static List<ContactData> GetAll()
+        {
+            using (AddressBookDB db = new AddressBookDB())
+            {
+                return (from g in db.Contacts select g).ToList();
             }
         }
     }

@@ -38,7 +38,7 @@ namespace WebAddressbookTests
 
         public void ReturnToGroupsPage()
         {
-            driver.FindElement(By.LinkText("group page")).Click();
+            driver.FindElement(By.LinkText("groups")).Click();
         }
 
         public void ReturnToHomepage()

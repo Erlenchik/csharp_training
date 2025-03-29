@@ -14,7 +14,7 @@ using WebAddressbookTests;
 namespace WebAddressbookTests
 {
     public class ContactHelper : HelperBase
-    {   
+    {
         public ContactHelper(ApplicationManager manager) : base(manager) { }
 
         public ContactHelper Creation(ContactData contact)
@@ -46,10 +46,29 @@ namespace WebAddressbookTests
 
         }
 
+        public ContactHelper Modify(ContactData contact, ContactData newData)
+        {
+            manager.Navigator.OpenHomePage();
+            SelectContact(contact.Id);
+            InitContactModification(contact.Id);
+            FillContactForm(newData);
+            SubmitContactModification();
+            ReturnToHomepage();
+            return this;
+        }
+
         public ContactHelper Remove(int v)
         {
             manager.Navigator.OpenHomePage();
             SelectContact();
+            RemoveContact();
+            return this;
+        }
+
+        public ContactHelper Remove(ContactData contact)
+        {
+            manager.Navigator.OpenHomePage();
+            SelectContact(contact.Id);
             RemoveContact();
             return this;
         }
@@ -85,11 +104,23 @@ namespace WebAddressbookTests
             driver.FindElement(By.Name("selected[]")).Click();
             return this;
         }
+
+        public ContactHelper SelectContact(String id)
+        {
+            driver.FindElement(By.XPath("(//input[@name='selected[]' and @value='" + id + "'])")).Click();
+            return this;
+        }
+
         public void InitContactModification(int index)
         {
             driver.FindElements(By.Name("entry"))[index]
                 .FindElements(By.TagName("td"))[7]
                 .FindElement(By.TagName("a")).Click();
+        }
+
+        public void InitContactModification(String id)
+        {
+            driver.FindElement(By.XPath("//a[@href='edit.php?id=" + id + "']")).Click();
         }
 
         public ContactHelper SubmitContactModification()
@@ -144,10 +175,10 @@ namespace WebAddressbookTests
                 .FindElements(By.TagName("td"));
 
             string lastName = cells[1].Text;
-            string firstName = cells[2].Text;   
-            string address = cells[3].Text; 
+            string firstName = cells[2].Text;
+            string address = cells[3].Text;
             string allPhones = cells[5].Text;
-            string allEmails = cells[4].Text;   
+            string allEmails = cells[4].Text;
 
             return new ContactData(firstName, lastName)
             {
@@ -228,8 +259,8 @@ namespace WebAddressbookTests
             string address = GetContactInformationFromTable(index).Address;
             string allPhones = GetContactInformationFromTable(index).AllPhones;
             string allEmails = GetContactInformationFromTable(index).AllEmails;
-            
-            string contactFromTableToDetail = firstName + " " + lastName + "\r\n" +  address + "\r\n" + "\r\n" + allPhones + "\r\n" + "\r\n" + allEmails;
+
+            string contactFromTableToDetail = firstName + " " + lastName + "\r\n" + address + "\r\n" + "\r\n" + allPhones + "\r\n" + "\r\n" + allEmails;
 
             return contactFromTableToDetail.Trim();
         }
@@ -244,10 +275,10 @@ namespace WebAddressbookTests
             {
                 return "";
             }
-            else 
+            else
             {
-                return details.Replace("H: ", "").Replace("M: ", "").Replace("W: ", "");               
+                return details.Replace("H: ", "").Replace("M: ", "").Replace("W: ", "");
             }
-        } 
+        }
     }
 }

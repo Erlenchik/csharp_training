@@ -16,7 +16,7 @@ using WebAddressbookTests;
 namespace WebAddressbookTests
 {
     [TestFixture]
-    public class ContactCreationTests : AuthTestBase
+    public class ContactCreationTests : ContactTestBase
     {
         public static IEnumerable<ContactData> RandomGroupDataProvider()
         {
@@ -56,7 +56,6 @@ namespace WebAddressbookTests
         {
             List<ContactData> contacts = new List<ContactData>();
             Excel.Application app = new Excel.Application();
-            app.Visible = true;
             Excel.Workbook wb = app.Workbooks.Open(Path.Combine(Directory.GetCurrentDirectory(), @"contacts.xlsx"));
             Excel.Worksheet sheet = wb.ActiveSheet;
             Excel.Range range = sheet.UsedRange;
@@ -78,13 +77,13 @@ namespace WebAddressbookTests
         [Test, TestCaseSource("ContactDataFromXmlFile")]
         public void ContactCreationTest(ContactData contact)
         {
-            List<ContactData> oldContacts = app.Contacts.GetContactList();
+            List<ContactData> oldContacts = ContactData.GetAll();
 
-             app.Contacts.Creation(contact);
+            app.Contacts.Creation(contact);
 
              Assert.AreEqual(oldContacts.Count + 1, app.Contacts.GetContactCount());
 
-             List<ContactData> newContacts = app.Contacts.GetContactList();
+             List<ContactData> newContacts = ContactData.GetAll();
              oldContacts.Add(contact);
              oldContacts.Sort();
              newContacts.Sort();

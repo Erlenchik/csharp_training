@@ -26,7 +26,7 @@ namespace mantis_tests
 
         private void OpenRegistrationForm()
         {
-            driver.FindElements(By.CssSelector("span.bracket-link"))[0].Click();
+            driver.FindElement(By.CssSelector("a.back-to-login-link.pull-left")).Click();
         }
 
         private void FillRegistrationForm(AccountData account)
@@ -37,7 +37,7 @@ namespace mantis_tests
 
         private void SubmitRegistration()
         {
-            driver.FindElement(By.CssSelector("input.button")).Click();
+            driver.FindElement(By.CssSelector("input.width-40.pull-right.btn.btn-success.btn-inverse.bigger-110")).Click();
         }     
     }
 }

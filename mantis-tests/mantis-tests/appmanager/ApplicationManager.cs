@@ -21,9 +21,9 @@ namespace mantis_tests
         private ApplicationManager()
         {
             driver = new ChromeDriver();
-            baseURL = "http://localhost/addressbook/";
+            baseURL = "http://localhost/mantisbt-2.22.1/login_page.php";
             Registration = new RegistrationHelper(this);
-            Ftp = new FtpHelper(this);
+           // Ftp = new FtpHelper(this);
         }
 
         ~ApplicationManager()
@@ -60,6 +60,6 @@ namespace mantis_tests
         
         public RegistrationHelper Registration { get; set; }
 
-        public FtpHelper Ftp { get; set; }
+       // public FtpHelper Ftp { get; set; }
     }
 }

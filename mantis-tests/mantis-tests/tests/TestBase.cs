@@ -11,13 +11,13 @@ namespace mantis_tests
     {
         public static bool PERFORM_LONG_UI_CHECKS = false;
         protected ApplicationManager app;
-        
+
         [TestFixtureSetUp]
         public void SetupApplicationManager()
         {
             app = ApplicationManager.GetInstance();
         }
-            
+
         public static Random rnd = new Random();
 
         public static string GenerateRandomString(int max)

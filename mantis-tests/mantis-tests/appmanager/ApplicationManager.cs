@@ -7,23 +7,35 @@ using System.Threading;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
+using System.Security.Cryptography;
 
 namespace mantis_tests
+
 {
     public class ApplicationManager
     {
         protected IWebDriver driver;
         protected string baseURL;
-
+        protected LoginHelper loginHelper;
+        protected ProjectManagementHelper projectManagementHelper;
+        protected NavigationHelper navigator;
+        //public FtpHelper Ftp { get; set; }
 
         private static ThreadLocal<ApplicationManager> app = new ThreadLocal<ApplicationManager>();
 
-        private ApplicationManager()
+        public ApplicationManager()
         {
             driver = new ChromeDriver();
-            baseURL = "http://localhost/mantisbt-2.22.1/login_page.php";
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
+            baseURL = "http://localhost/mantisbt-2.26.4";
+            loginHelper = new LoginHelper(this);
+            projectManagementHelper = new ProjectManagementHelper(this);
+            navigator = new NavigationHelper(this, baseURL);
+
             Registration = new RegistrationHelper(this);
-           // Ftp = new FtpHelper(this);
+            //Ftp = new FtpHelper(this);
+            James = new JamesHelper(this);
+            Mail = new MailHelper(this);
         }
 
         ~ApplicationManager()
@@ -40,26 +52,47 @@ namespace mantis_tests
 
         public static ApplicationManager GetInstance()
         {
-            if (! app.IsValueCreated)
+            if (!app.IsValueCreated)
             {
                 ApplicationManager newInstance = new ApplicationManager();
-                newInstance.driver.Url = "http://localhost/mantisbt-2.22.1/login_page.php";
+                newInstance.driver.Url = newInstance.baseURL + "/login_page.php";
                 app.Value = newInstance;
             }
             return app.Value;
         }
 
-        public IWebDriver Driver 
-        { 
+        public IWebDriver Driver
+        {
             get
-            {  
-                return driver; 
+            {
+                return driver;
             }
-                
-        }      
-        
-        public RegistrationHelper Registration { get; set; }
+        }
+        public LoginHelper Auth
+        {
+            get
+            {
+                return loginHelper;
+            }
+        }
+        public NavigationHelper Navigator
+        {
+            get
+            {
+                return navigator;
+            }
+        }
 
-       // public FtpHelper Ftp { get; set; }
+        public ProjectManagementHelper Projects
+        {
+            get
+            {
+                return projectManagementHelper;
+            }
+        }
+        public JamesHelper James { get; set; }
+        public RegistrationHelper Registration { get; set; }
+        //public FtpHelper Ftp { get; set; }
+        public MailHelper Mail { get; set; }
     }
 }

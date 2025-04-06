@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using OpenQA.Selenium;
 
@@ -17,11 +18,14 @@ namespace mantis_tests
             OpenRegistrationForm();
             FillRegistrationForm(account);
             SubmitRegistration();
+            String url = GetConfirmationUrl(account);
+            FillPasswordForm(url, account);
+            SubmitPasswordForm();
         }
 
         private void OpenMainPage()
         {
-            manager.Driver.Url = "http://localhost/mantisbt-2.22.1/login_page.php";
+            manager.Driver.Url = "http://localhost/mantisbt-2.26.4/login_page.php";
         }
 
         private void OpenRegistrationForm()
@@ -38,6 +42,25 @@ namespace mantis_tests
         private void SubmitRegistration()
         {
             driver.FindElement(By.CssSelector("input.width-40.pull-right.btn.btn-success.btn-inverse.bigger-110")).Click();
-        }     
+        }
+
+        private string GetConfirmationUrl(AccountData account)
+        {
+            String message = manager.Mail.GetLastMail(account);
+            Match match = Regex.Match(message, @"http://\S*");
+            return match.Value;
+        }
+
+        private void FillPasswordForm(string url, AccountData account)
+        {
+            driver.Url = url;
+            driver.FindElement(By.Name("password")).SendKeys(account.Password);
+            driver.FindElement(By.Name("password_confirm")).SendKeys(account.Password);
+        }
+
+        private void SubmitPasswordForm()
+        {
+            driver.FindElement(By.CssSelector("input.button")).Click();
+        }
     }
 }

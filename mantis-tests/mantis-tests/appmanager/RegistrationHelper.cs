@@ -60,7 +60,7 @@ namespace mantis_tests
 
         private void SubmitPasswordForm()
         {
-            driver.FindElement(By.CssSelector("input.button")).Click();
+            driver.FindElement(By.CssSelector("span.bigger-110")).Click();
         }
     }
 }

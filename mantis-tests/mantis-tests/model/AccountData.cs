@@ -21,27 +21,29 @@ namespace mantis_tests
 
         public string Name
         {
-            get
-            {
-                return name;
-            }
-            set
-            {
-                name = value;
-            }
+            get { return name; }
+            set { name = value; }
         }
 
         public string Password
         {
-            get
-            {
-                return password;
-            }
-            set
-            {
-                password = value;
-            }
+            get { return password; }
+            set { password = value; }
         }
+
         public string Email { get; set; }
+
+        public static AccountData GenerateUser()
+        {
+            string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+            string username = $"testuser_{timestamp}";
+            string password = "password";
+            string email = $"{username}@localhost.localdomain";
+
+            return new AccountData(username, password)
+            {
+                Email = email
+            };
+        }
     }
 }

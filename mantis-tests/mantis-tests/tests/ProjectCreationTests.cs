@@ -13,8 +13,19 @@ namespace mantis_tests
         [Test]
         public void TestProjectCreation()
         {
-            ProjectData project = new ProjectData("NewProject");
+
+            List<ProjectData> oldProjects = app.Projects.GetProjectList();
+            ProjectData project = ProjectData.GenerateProjectName();
             app.Projects.Create(project);
+
+            List<ProjectData> newProjects = app.Projects.GetProjectList();
+
+            oldProjects.Add(project);
+
+            oldProjects.Sort((x, y) => x.Name.CompareTo(y.Name));
+            newProjects.Sort((x, y) => x.Name.CompareTo(y.Name));
+
+            Assert.AreEqual(oldProjects, newProjects);
         }
     }
 }

@@ -14,5 +14,30 @@ namespace mantis_tests
             Name = name;
         }
         public string Name { get; set; }
+    public static ProjectData GenerateProjectName()
+        {
+            string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+            string name = $"Project_{timestamp}";
+            return new ProjectData(name);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is ProjectData other)
+            {
+                return Name == other.Name;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return $"Project: {Name}";
+        }
     }
 }

@@ -30,8 +30,11 @@ namespace WebAddressbookTests
         {
             string fromDetails = app.Contacts.GetContactInformationFromDetails(0);
             string fromFormToString = app.Contacts.GetContactInfoFromEditFormToString(0);
+            
+            fromDetails = app.Contacts.NormalizeString(fromDetails);
+            fromFormToString = app.Contacts.NormalizeString(fromFormToString);
 
-            //verification
+            // verification
             Assert.AreEqual(fromDetails, fromFormToString);
         }
     }

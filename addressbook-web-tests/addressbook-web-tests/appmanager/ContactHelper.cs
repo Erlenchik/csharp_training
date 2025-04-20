@@ -231,11 +231,32 @@ namespace WebAddressbookTests
             string email = driver.FindElement(By.Name("email")).GetAttribute("value");
             string email2 = driver.FindElement(By.Name("email2")).GetAttribute("value");
             string email3 = driver.FindElement(By.Name("email3")).GetAttribute("value");
-
-            string contactFromEditFormToDetail = firstName + " " + lastName + "\r\n" + address + "\r\n" + "\r\n" + homePhone + "\r\n" + mobilePhone + "\r\n" + workPhone + "\r\n" + "\r\n" + email + "\r\n" + email2 + "\r\n" + email3;
+            
+            string contactFromEditFormToDetail = firstName + " " + lastName + "\r\n" +
+                                                 address + "\r\n" +
+                                                 homePhone + "\r\n" +
+                                                 mobilePhone + "\r\n" +
+                                                 workPhone + "\r\n" +
+                                                 email + "\r\n" +
+                                                 email2 + "\r\n" +
+                                                 email3;
 
             return contactFromEditFormToDetail.Trim();
         }
+
+        public string NormalizeString(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+            {
+                return input;
+            }
+            
+            input = input.Replace("\r\n", " ").Replace("\n", " ");            
+            input = Regex.Replace(input, @"\s+", " ").Trim();
+            
+            return input;
+        }
+        
 
         public int GetNumberOfSearchResults()
         {
@@ -269,15 +290,15 @@ namespace WebAddressbookTests
         {
             manager.Navigator.OpenHomePage();
             InitContactDetails(0);
-
+            
             string details = driver.FindElement(By.CssSelector("div#content")).Text;
-            if (details == null || details == "")
+            if (string.IsNullOrEmpty(details))
             {
                 return "";
             }
             else
             {
-                return details.Replace("H: ", "").Replace("M: ", "").Replace("W: ", "");
+                return details.Replace("H: ", "\r\n").Replace("M: ", "\r\n").Replace("W: ", "\r\n");
             }
         }
 

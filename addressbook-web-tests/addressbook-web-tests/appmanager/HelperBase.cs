@@ -2,6 +2,7 @@
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using System.Reflection;
+using System;
 
 namespace WebAddressbookTests
 {
@@ -20,9 +21,12 @@ namespace WebAddressbookTests
         {
             if (text != null)
             {
-                driver.FindElement(locator).Click();
-                driver.FindElement(locator).Clear();
-                driver.FindElement(locator).SendKeys(text);
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+                IWebElement element = wait.Until(driver => driver.FindElement(locator));
+                
+                element.Click();
+                element.Clear();
+                element.SendKeys(text);
             }
         }
 

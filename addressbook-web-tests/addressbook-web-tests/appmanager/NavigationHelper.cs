@@ -38,7 +38,8 @@ namespace WebAddressbookTests
 
         public void ReturnToGroupsPage()
         {
-            driver.FindElement(By.LinkText("groups")).Click();
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+            wait.Until(d => d.FindElement(By.LinkText("groups"))).Click();
         }
 
         public void ReturnToHomepage()

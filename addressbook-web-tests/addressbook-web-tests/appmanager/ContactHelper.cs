@@ -215,49 +215,7 @@ namespace WebAddressbookTests
                 Email3 = email3
             };
         }
-
-        public string GetContactInfoFromEditFormToString(int index)
-        {
-            manager.Navigator.OpenHomePage();
-            InitContactModification(0);
-
-            string firstName = driver.FindElement(By.Name("firstname")).GetAttribute("value");
-            string lastName = driver.FindElement(By.Name("lastname")).GetAttribute("value");
-            string address = driver.FindElement(By.Name("address")).GetAttribute("value");
-
-            string homePhone = driver.FindElement(By.Name("home")).GetAttribute("value");
-            string mobilePhone = driver.FindElement(By.Name("mobile")).GetAttribute("value");
-            string workPhone = driver.FindElement(By.Name("work")).GetAttribute("value");
-            string email = driver.FindElement(By.Name("email")).GetAttribute("value");
-            string email2 = driver.FindElement(By.Name("email2")).GetAttribute("value");
-            string email3 = driver.FindElement(By.Name("email3")).GetAttribute("value");
-            
-            string contactFromEditFormToDetail = firstName + " " + lastName + "\r\n" +
-                                                 address + "\r\n" +
-                                                 homePhone + "\r\n" +
-                                                 mobilePhone + "\r\n" +
-                                                 workPhone + "\r\n" +
-                                                 email + "\r\n" +
-                                                 email2 + "\r\n" +
-                                                 email3;
-
-            return contactFromEditFormToDetail.Trim();
-        }
-
-        public string NormalizeString(string input)
-        {
-            if (string.IsNullOrEmpty(input))
-            {
-                return input;
-            }
-            
-            input = input.Replace("\r\n", " ").Replace("\n", " ");            
-            input = Regex.Replace(input, @"\s+", " ").Trim();
-            
-            return input;
-        }
         
-
         public int GetNumberOfSearchResults()
         {
             manager.Navigator.OpenHomePage();
@@ -270,36 +228,16 @@ namespace WebAddressbookTests
             driver.FindElements(By.Name("entry"))[index]
                 .FindElements(By.TagName("td"))[6]
                 .FindElement(By.TagName("a")).Click();
-
-        }
-
-        public string ContactFromTableToDetail(int index)
-        {
-            string firstName = GetContactInformationFromTable(index).Firstname;
-            string lastName = GetContactInformationFromTable(index).Lastname;
-            string address = GetContactInformationFromTable(index).Address;
-            string allPhones = GetContactInformationFromTable(index).AllPhones;
-            string allEmails = GetContactInformationFromTable(index).AllEmails;
-
-            string contactFromTableToDetail = firstName + " " + lastName + "\r\n" + address + "\r\n" + "\r\n" + allPhones + "\r\n" + "\r\n" + allEmails;
-
-            return contactFromTableToDetail.Trim();
         }
 
         public string GetContactInformationFromDetails(int index)
         {
-            manager.Navigator.OpenHomePage();
+            manager.Navigator.ReturnToHomepage();
             InitContactDetails(0);
-            
-            string details = driver.FindElement(By.CssSelector("div#content")).Text;
-            if (string.IsNullOrEmpty(details))
-            {
-                return "";
-            }
-            else
-            {
-                return details.Replace("H: ", "\r\n").Replace("M: ", "\r\n").Replace("W: ", "\r\n");
-            }
+
+            string InfoToContact = driver.FindElement(By.CssSelector("div#content")).Text;            
+            InfoToContact = Regex.Replace(InfoToContact, @"(\r\n|\n|\r){2,}", "\r\n");
+            return InfoToContact.Trim();
         }
 
         public void AddContactToGroup(ContactData contact, GroupData group)
@@ -347,7 +285,7 @@ namespace WebAddressbookTests
         private void SelectGroupToRemoval(string name)
         {
             new SelectElement(driver.FindElement(By.Name("group"))).SelectByText(name);
-        }             
+        }
 
         private void CommitRemovalContactFromGroup()
         {

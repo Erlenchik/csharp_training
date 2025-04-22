@@ -19,7 +19,7 @@ namespace WebAddressbookTests
             ContactData fromForm = app.Contacts.GetContactInformationFromEditForm(0);
 
             //verification
-            Assert.AreEqual(fromTable, fromForm);  
+            Assert.AreEqual(fromTable, fromForm);
             Assert.AreEqual(fromTable.Address, fromForm.Address);
             Assert.AreEqual(fromTable.AllPhones, fromForm.AllPhones);
             Assert.AreEqual(fromTable.AllEmails, fromForm.AllEmails);
@@ -28,14 +28,11 @@ namespace WebAddressbookTests
         [Test]
         public void TestContactInformationFromDetails()
         {
+            ContactData fromForm = app.Contacts.GetContactInformationFromEditForm(0);
             string fromDetails = app.Contacts.GetContactInformationFromDetails(0);
-            string fromFormToString = app.Contacts.GetContactInfoFromEditFormToString(0);
-            
-            fromDetails = app.Contacts.NormalizeString(fromDetails);
-            fromFormToString = app.Contacts.NormalizeString(fromFormToString);
 
             // verification
-            Assert.AreEqual(fromDetails, fromFormToString);
+            Assert.AreEqual(fromForm.AllDetails, fromDetails);
         }
     }
 }

@@ -12,7 +12,6 @@ using Microsoft.Office.Interop.Excel;
 namespace WebAddressbookTests
 {
     [Table(Name = "addressbook")]
-
     public class ContactData : IEquatable<ContactData>, IComparable<ContactData>
     {
         private const string Pattern = "[ ()-]";
@@ -33,14 +32,8 @@ namespace WebAddressbookTests
 
         public bool Equals(ContactData other)
         {
-            if (Object.ReferenceEquals(other, null))
-            {
-                return false;
-            }
-            if (Object.ReferenceEquals(other, this))
-            {
-                return true;
-            }
+            if (Object.ReferenceEquals(other, null)) return false;
+            if (Object.ReferenceEquals(other, this)) return true;
             return Firstname == other.Firstname && Lastname == other.Lastname;
         }
 
@@ -56,16 +49,9 @@ namespace WebAddressbookTests
 
         public int CompareTo(ContactData other)
         {
-            if (Object.ReferenceEquals(other, null))
-            {
-                return 1;
-            }
+            if (Object.ReferenceEquals(other, null)) return 1;
             int result = Lastname.CompareTo(other.Lastname);
-            if (result == 0)
-            {
-                result = Firstname.CompareTo(other.Firstname);
-            }
-            return result;
+            return result == 0 ? Firstname.CompareTo(other.Firstname) : result;
         }
 
         [Column(Name = "firstname")]
@@ -98,53 +84,27 @@ namespace WebAddressbookTests
         [Column(Name = "id"), PrimaryKey, Identity]
         public string Id { get; set; }
 
+        [Column(Name = "deprecated")]
+        public string Deprecated { get; set; }
+
         public string AllPhones
         {
             get
             {
-                if (allPhones != null)
-                {
-                    return allPhones;
-                }
-                else
-                {
-                    return (CleanUp(HomePhone) + CleanUp(MobilePhone) + CleanUp(WorkPhone)).Trim();
-                }
+                if (allPhones != null) return allPhones;
+                return (FormatPhone("H: ", HomePhone) + FormatPhone("M: ", MobilePhone) + FormatPhone("W: ", WorkPhone)).Trim();
             }
-
-            set
-            {
-                allPhones = value;
-            }
-        }
-
-        private string CleanUp(string phone)
-        {
-            if (phone == null || phone == "")
-            {
-                return "";
-            }
-            return Regex.Replace(phone, Pattern, "") + "\r\n"; //аналогично phone.Replace(" ", "").Replace("-", "").Replace("(", "").Replace(")", "") + "\r\n"; 
+            set => allPhones = value;
         }
 
         public string AllEmails
         {
             get
             {
-                if (allEmails != null)
-                {
-                    return allEmails;
-                }
-                else
-                {
-                    return (CleanUp(Email) + CleanUp(Email2) + CleanUp(Email3)).Trim();
-                }
+                if (allEmails != null) return allEmails;
+                return (CleanUp(Email) + CleanUp(Email2) + CleanUp(Email3)).Trim();
             }
-
-            set
-            {
-                allEmails = value;
-            }
+            set => allEmails = value;
         }
 
         public string AllDetails
@@ -152,17 +112,14 @@ namespace WebAddressbookTests
             get
             {
                 if (allDetails != null)
-                {
-                    return allDetails;
+                { 
+                    return allDetails; 
                 }
-                else
-                {
-                    return (CleanUp(AllPhones) + CleanUp(allEmails)).Trim();
-                }
+                return (Name + "\r\n" + CleanUpEmpty(Address) + CleanUpEmpty(AllPhones) + CleanUpEmpty(AllEmails)).Trim();
             }
-            set
-            {
-                allDetails = value;
+            set 
+            { 
+                allDetails = value; 
             }
         }
 
@@ -170,26 +127,17 @@ namespace WebAddressbookTests
         {
             get
             {
-                if (name != null)
-                {
-                    return name;
-                }
-                return (CleanUp(Firstname) + " " + CleanUp(Lastname)).Trim();
+                if (name != null) return name;
+                return (CleanUpEmptyName(Firstname) + " " + CleanUpEmptyName(Lastname)).Trim();
             }
-            set
-            {
-                name = value;
-            }
+            set => name = value;
         }
-
-        [Column(Name = "deprecated")]
-        public string Deprecated { get; set; }
 
         public static List<ContactData> GetAll()
         {
             using (AddressBookDB db = new AddressBookDB())
             {
-                return (from g in db.Contacts select g).ToList();
+                return (from c in db.Contacts select c).ToList();
             }
         }
 
@@ -198,15 +146,36 @@ namespace WebAddressbookTests
             using (AddressBookDB db = new AddressBookDB())
             {
                 return db.Contacts
-                 .OrderByDescending(c => c.Id)
-                 .Select(c => new ContactData
-                 {
-                     Id = c.Id,
-                     Firstname = c.Firstname,
-                     Lastname = c.Lastname
-                 })
-                 .First();
+                    .OrderByDescending(c => c.Id)
+                    .Select(c => new ContactData
+                    {
+                        Id = c.Id,
+                        Firstname = c.Firstname,
+                        Lastname = c.Lastname
+                    })
+                    .First();
             }
+        }
+        
+        private string CleanUp(string input)
+        {
+            if (string.IsNullOrEmpty(input)) return "";
+            return Regex.Replace(input, Pattern, "") + "\r\n";
+        }
+
+        private string CleanUpEmpty(string input)
+        {
+            return string.IsNullOrEmpty(input) ? "" : input + "\r\n";
+        }
+
+        private string CleanUpEmptyName(string name)
+        {
+            return string.IsNullOrEmpty(name) ? "" : name;
+        }
+
+        private string FormatPhone(string label, string number)
+        {
+            return string.IsNullOrEmpty(number) ? "" : label + CleanUp(number);
         }
     }
 }

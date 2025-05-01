@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 
 namespace mantis_tests
 {
@@ -23,9 +24,18 @@ namespace mantis_tests
             SubmitPasswordForm();
         }
 
-        private void OpenMainPage()
+        public void OpenMainPage()
         {
+            ClearSession();
             manager.Driver.Url = "http://localhost/mantisbt-2.26.4/login_page.php";
+            WebDriverWait wait = new WebDriverWait(manager.Driver, TimeSpan.FromSeconds(10));
+            wait.Until(driver => driver.FindElements(By.CssSelector("input[name='username']")).Any());
+        }
+
+        public void ClearSession()
+        {
+            manager.Driver.Manage().Cookies.DeleteAllCookies();
+            manager.Driver.Navigate().Refresh();
         }
 
         private void OpenRegistrationForm()

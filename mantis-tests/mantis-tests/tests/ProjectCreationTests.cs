@@ -27,5 +27,26 @@ namespace mantis_tests
 
             Assert.AreEqual(oldProjects, newProjects);
         }
+
+        [Test]
+        public async Task TestProjectCreationAPI()
+        {
+            var project = new ProjectData(GenerateRandomString(9))
+            {
+                Description = GenerateRandomString(15)
+            };
+
+            var oldProjects = await app.Projects.GetProjectListAPI();
+
+            app.API.CreateProjectsByApi(project);
+
+            var newProjects = await app.Projects.GetProjectListAPI();
+            oldProjects.Add(project);
+
+            oldProjects.Sort();
+            newProjects.Sort();
+
+            Assert.AreEqual(oldProjects, newProjects);
+        }
     }
 }

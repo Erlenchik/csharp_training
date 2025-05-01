@@ -29,5 +29,22 @@ namespace mantis_tests
 
             Assert.AreEqual(oldProjects.Count - 1, newProjects.Count);
         }
+
+        [Test]
+        public async Task TestProjectRemovalAPI()
+        {
+            app.Projects.ViewListInProject();
+
+            List<ProjectData> beforeDeletionjectsList = await app.Projects.GetProjectListAPI();
+
+            ProjectData projectToDelete = app.Projects.TakeProject();
+            app.Projects.Remove(1);
+
+            List<ProjectData> afterCreateProjectsList = await app.Projects.GetProjectListAPI();
+            beforeDeletionjectsList.Remove(projectToDelete);
+            beforeDeletionjectsList.Sort();
+            afterCreateProjectsList.Sort();
+            Assert.AreEqual(beforeDeletionjectsList, afterCreateProjectsList);
+        }
     }
 }

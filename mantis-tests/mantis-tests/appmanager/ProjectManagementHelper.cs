@@ -5,6 +5,7 @@ using OpenQA.Selenium;
 using System.Collections.ObjectModel;
 using System.Linq;
 using OpenQA.Selenium.Support.UI;
+using mantis_tests.Mantis;
 
 namespace mantis_tests
 {
@@ -136,6 +137,96 @@ namespace mantis_tests
                 }
             }
             return false;
+        }
+
+        public void ViewListInProject()
+        {
+            OpenPageProjectManagement();
+            var projectsTable = driver.FindElement(
+                By.XPath("//table[@class='table table-striped table-bordered table-condensed table-hover']"));
+            var projectRows = projectsTable.FindElements(By.XPath(".//tbody/tr"));
+
+            if (projectRows.Count == 0)
+            {
+                ProjectData createdProjectToRemove = new ProjectData("Добавляем проект");
+                Create(createdProjectToRemove);
+            }
+        }
+
+        public List<ProjectData> GetAllProjectsList()
+        {
+            List<ProjectData> projectList = new List<ProjectData>();
+            ICollection<IWebElement> rows = driver.FindElements(
+                By.XPath("//table[@class='table table-striped table-bordered table-condensed table-hover']/tbody/tr")
+            );
+            foreach (IWebElement row in rows)
+            {
+                try
+                {
+                    string id = row.FindElement(By.XPath("./td/a")).GetAttribute("href").Split('=')[1];
+                    string name = row.FindElement(By.XPath("./td/a")).Text;
+                    string description = row.FindElement(By.XPath("./td[5]")).Text;
+
+                    ProjectData project = new ProjectData(name)
+                    {
+                        Id = id
+                    };
+
+                    projectList.Add(project);
+                }
+                catch (NoSuchElementException ex)
+                {
+                    Console.WriteLine($"Ошибка при извлечении данных: {ex.Message}");
+                }
+            }
+            return projectList;
+        }
+
+        public ProjectData TakeProject()
+        {
+            IWebElement firstRow = driver.FindElement(
+                By.XPath("//table[@class='table table-striped table-bordered table-condensed table-hover']/tbody/tr[1]")
+            );
+            try
+            {
+                string id = firstRow.FindElement(By.XPath("./td/a")).GetAttribute("href").Split('=')[1];
+                string name = firstRow.FindElement(By.XPath("./td/a")).Text;
+                string description = firstRow.FindElement(By.XPath("./td[5]")).Text;
+
+                return new ProjectData(name)
+                {
+                    Description = description,
+                    Id = id
+                };
+            }
+            catch (NoSuchElementException)
+            {
+                return null;
+            }
+        }
+
+        public int GetProjectCount()
+        {
+            return driver.FindElements(By.XPath("//table[contains(@class,'table')]/tbody/tr")).Count;
+        }
+
+        public async Task<List<ProjectData>> GetProjectListAPI()
+        {
+            var projectList = new List<ProjectData>();
+            MantisConnectPortTypeClient client = new MantisConnectPortTypeClient();
+            var projects = await client.mc_projects_get_user_accessibleAsync("administrator", "root");
+
+            foreach (var project in projects)
+            {
+                var projectData = new ProjectData(project.name)
+                {
+                    Id = project.id,
+                    Description = project.description
+                };
+                projectList.Add(projectData);
+            }
+
+            return projectList;
         }
     }
 }
